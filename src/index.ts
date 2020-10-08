@@ -5,27 +5,37 @@
  * @see <https://spdx.org/licenses/AGPL-3.0-only.html>
  */
 
-const noEntry = Symbol('No Entry')
-
-class MultiKeyMap<K extends unknown[], V> {
-    #implementation = new Map()
-    #size = 0
+abstract class MultiKeyMap {
+    #implementation;
+    #size = 0;
 
     constructor(entries?: readonly (readonly [...K, V])[] | null) {
         entries?.forEach(entry => {
             const keys = entry.slice(0,-1) as K,
-                  value = entry.slice(-1)[0] as V
-            this.set(keys,value)
-        })
+                  value = entry.slice(-1)[0] as V;
+            this.set(keys,value);
+        });
     }
 
     clear(): void {
-        this.#implementation.clear()
+        this.#implementation = new Leaf(undefined);
     }
 
+    set(): this {}
+}
+
+/*
+const noEntry = Symbol('No Entry');
+
+class MultiKeyMap<K extends unknown[], V> {
+    #implementation = new Map();
+    #size = 0;
+
+
     delete(keys: K){
-        if(this.has(keys))
-            this.#size--
+        if(this.has(keys)) {
+            this.#size--;
+        }
 
         // TODO: find position
         // replace with noEntry
@@ -33,25 +43,34 @@ class MultiKeyMap<K extends unknown[], V> {
 
     forEach(callbackfn: (value: V, keys: K, multiKeyMap: MultiKeyMap<K, V>) => void, thisArg?: any): void {
         // TODO
-    };
+    }
 
     get(keys: K): V | undefined {
         // TODO
     }
 
     has(keys: K): boolean {
-        // TODO
+        if(keys.length == 0) {
+            return false;
+        } else {
+            const value = keys.reduce((mapOrResule, key)=> {
+
+            })
+            // TODO
+        }
     }
 
     set(keys: K, value: V): this {
-        if(keys.length == 0)
-            return this
+        if(keys.length == 0) {
+            return this;
+        }
 
-        if(!this.has(keys))
-            this.#size++
+        if(!this.has(keys)) {
+            this.#size++;
+        }
 
         if (keys.length == 1) {
-            this.#implementation.set(keys[0],value)
+            this.#implementation.set(keys[0],value);
         } else if(keys.length > 1) {
             const newMap: Map<any, any> = (keys.slice(0, -1) as K)
                 .reduce((newMap: Map<any,any>, key) => {
@@ -63,14 +82,15 @@ class MultiKeyMap<K extends unknown[], V> {
 
                         return newMap;
                     }
-                }, this.#implementation)
+                }, this.#implementation);
             newMap.set(keys[keys.length - 1], value);
         }
 
-        return this
+        return this;
     }
 
     get size(): number {
-        return this.#size
+        return this.#size;
     }
 }
+*/
