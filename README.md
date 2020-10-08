@@ -1,2 +1,3 @@
-# multi-key-map
+# MultiKeyMap
+
 A map implementation that supports multiple keys
