@@ -5,102 +5,132 @@
  * @see <https://spdx.org/licenses/AGPL-3.0-only.html>
  */
 
-const noEntry = Symbol('noEntry')
+const noEntry = Symbol('noEntry');
 
 class MultiKeyMap<KS extends unknown[], V> {
-    #value: V | typeof noEntry = noEntry
-    #children = new Map<KS[0], MultiKeyMap<KS,V>>()
+    #value: V | typeof noEntry = noEntry;
+    #children = new Map<KS[0], MultiKeyMap<KS,V>>();
 
     constructor(entries?: readonly (readonly [...KS, V])[] | null) {
-        entries?.forEach(entry => {
-            const keys = entry.slice(0,-1) as KS,
-                  value = entry.slice(-1)[0] as V;
-            this.set(keys,value);
-        });
+        entries?.forEach(entry => this.set(...entry));
     }
 
     clear(): void {
-        this.#value = noEntry
-        this.#children.clear()
+        this.#value = noEntry;
+        this.#children.clear();
     }
 
-    delete(keys: KS): boolean {
+    delete(...keys: KS): boolean {
         if(keys.length == 0) {
             if(this.#value === noEntry) {
-                return false
+                return false;
             } else {
-                this.#value = noEntry
+                this.#value = noEntry;
 
-                return true
+                return true;
             }
         } else if(keys.length == 1) {
-            const k = keys[0]
+            const k = keys[0];
 
-            return this.#children.delete(k)
+            return this.#children.delete(k);
         } else {
-            const [k,ks] = [keys[0], keys.slice(1) as KS]
+            const [k,ks] = [keys[0], keys.slice(1) as KS];
 
             if(this.#children.has(k)) {
-                const child = this.#children.get(k)!
+                const child = this.#children.get(k)!;
 
-                return child.delete(ks)
+                return child.delete(...ks);
             } else {
-                return false
+                return false;
             }
         }
     }
 
-    forEach(callbackfn: (value: V, keys: KS, multiKeyMap: MultiKeyMap<KS, V>) => void, thisArg?: any): void {
-
+    entries(): void {
         // TODO
     }
 
-    get(keys: KS): V | undefined {
+    forEach(callbackfn: (value: V, keys: KS, multiKeyMap: MultiKeyMap<KS, V>) => void, thisArg?: any): void {
+        this._forEach([] as unknown as KS, callbackfn, thisArg);
+    }
+
+    get(...keys: KS): V | undefined {
         if(keys.length == 0) {
-            return this.#value === noEntry ? undefined : this.#value
+            return this.#value === noEntry ? undefined : this.#value;
         } else {
-            const [k,ks] = [keys[0], keys.slice(1) as KS]
+            const [k,ks] = [keys[0], keys.slice(1) as KS];
             if(this.#children.has(k)) {
-                const child = this.#children.get(k)!
-                return child.get(ks)
+                const child = this.#children.get(k)!;
+
+                return child.get(...ks);
             } else {
-                return undefined
+                return undefined;
             }
         }
     }
 
-    has(keys: KS): boolean {
+    has(...keys: KS): boolean {
         if(keys.length == 0) {
             return this.#value !== noEntry;
         } else {
-            const [k,ks] = [keys[0], keys.slice(1) as KS]
+            const [k,ks] = [keys[0], keys.slice(1) as KS];
 
             return this.#children.has(k) ?
-                this.#children.get(k)!.has(ks) : false
+                this.#children.get(k)!.has(...ks) : false;
         }
     }
 
-    set(keys: KS, value: V): this {
+    keys(): void {
+        // TODO
+    }
+
+    set(...keysValue: [...KS, V]): this {
+        const [keys, value] = (
+            keysValue.length <= 1 ? [[],keysValue[1]] :
+            [keysValue.slice(0,-1),keysValue[keysValue.length - 1]]
+        ) as unknown as [KS,V];
+
         if(keys.length == 0) {
-            this.#value = value
+            this.#value = value;
         } else {
-            const [k,ks] = [keys[0], keys.slice(1) as KS]
+            const [k,ks] = [keys[0], keys.slice(1) as KS];
             if(this.#children.has(k)) {
-                const child = this.#children.get(k)!
-                child.set(ks,value)
+                const child = this.#children.get(k)!;
+                child.set(...ks,value);
             } else {
-                const child = new MultiKeyMap<KS,V>()
-                child.set(ks,value)
-                this.#children.set(k,child)
+                const child = new MultiKeyMap<KS,V>();
+                child.set(...ks,value);
+                this.#children.set(k,child);
             }
         }
-        return this
+
+        return this;
     }
 
     get size(): number {
-        let s = 0
-        this.forEach(() => s++)
+        let s = 0;
+        this.forEach(() => s++);
 
-        return s
+        return s;
+    }
+
+    toString(): string {
+        return '[object MultiKeyMap]';
+    }
+
+    values(): void {
+        // TODO
+    }
+
+    protected _forEach(keys: KS, callbackfn: (value: V, keys: KS, multiKeyMap: MultiKeyMap<KS, V>) => void, thisArg?: any): void {
+        if(this.#value !== noEntry) {
+            callbackfn.call(thisArg ?? this,this.#value,keys,this);
+        }
+
+        this.#children.forEach((childMap, key) => {
+            childMap._forEach([...keys,key] as KS, callbackfn, thisArg);
+        });
     }
 }
+
+export default MultiKeyMap;

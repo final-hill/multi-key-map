@@ -34,7 +34,7 @@
         ],
         "consistent-return": [
             "error",
-            { "treatUndefinedAsUnspecified": true }
+            { "treatUndefinedAsUnspecified": false }
         ],
         "@typescript-eslint/consistent-type-assertions": "error",
         "@typescript-eslint/explicit-function-return-type":  "error",
