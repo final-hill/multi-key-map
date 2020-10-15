@@ -1,6 +1,6 @@
 # MultiKeyMap
 
-[![Build](https://github.com/final-hill/multi-key-map/workflows/Build/badge.svg?branch=master)](https://github.com/final-hill/multi-key-map/actions?query=workflow%3ABuild%2FRelease)
+[![Build](https://github.com/final-hill/multi-key-map/workflows/Build/badge.svg?branch=main)](https://github.com/final-hill/multi-key-map/actions?query=workflow%3ABuild%2FRelease)
 [![npm version](https://badge.fury.io/js/%40final-hill%2Fmulti-key-map.svg)](https://www.npmjs.com/package/@final-hill/multi-key-map)
 [![Downloads](https://img.shields.io/npm/dm/@final-hill/multi-key-map.svg)](https://www.npmjs.com/package/@final-hill/multi-key-map)
 
