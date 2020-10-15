@@ -1,6 +1,6 @@
 {
-  "name": "multi-key-map",
-  "version": "0.0.1",
+  "name": "@final-hill/multi-key-map",
+  "version": "1.0.0",
   "description": "A map implementation that supports multiple keys",
   "main": "dist/index.js",
   "repository": {
