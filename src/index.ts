@@ -29,10 +29,6 @@ class MultiKeyMap<KS extends unknown[], V> {
 
                 return true;
             }
-        } else if(keys.length == 1) {
-            const k = keys[0];
-
-            return this.#children.delete(k);
         } else {
             const [k,ks] = [keys[0], keys.slice(1) as KS];
 

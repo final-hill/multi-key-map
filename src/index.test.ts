@@ -130,4 +130,33 @@ describe('Testing MultiKeyMap', () => {
 
         expect(m.get('I','I')).toBe(undefined);
     });
+
+    test('string representation', () => {
+        expect(new MultiKeyMap().toString()).toBe('[object MultiKeyMap]');
+    });
+
+    test('forEach', () => {
+        const m = new MultiKeyMap([
+            ['a',1],
+            ['b',2],
+            ['c',3]
+        ]),
+        items: number[] = [];
+
+        expect(() => {
+            m.forEach(value => {
+                items.push(value);
+            });
+        }).not.toThrow();
+
+        expect(items.join()).toBe('1,2,3');
+
+        const n = new MultiKeyMap<[],number>();
+        n.set(1);
+        items.length = 0;
+        expect(() => {
+            n.forEach(function(this: number[], value){ this.push(value); }, items);
+        }).not.toThrow();
+        expect(items.join()).toBe('1');
+    });
 });
