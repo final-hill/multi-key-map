@@ -86,7 +86,7 @@ class MultiKeyMap<KS extends unknown[], V> {
 
     set(...keysValue: [...KS, V]): this {
         const [keys, value] = (
-            keysValue.length <= 1 ? [[],keysValue[1]] :
+            keysValue.length <= 1 ? [[],keysValue[0]] :
             [keysValue.slice(0,-1),keysValue[keysValue.length - 1]]
         ) as unknown as [KS,V];
 
@@ -96,10 +96,10 @@ class MultiKeyMap<KS extends unknown[], V> {
             const [k,ks] = [keys[0], keys.slice(1) as KS];
             if(this.#children.has(k)) {
                 const child = this.#children.get(k)!;
-                child.set(...ks,value);
+                child.set(...[...ks,value]);
             } else {
                 const child = new MultiKeyMap<KS,V>();
-                child.set(...ks,value);
+                child.set(...[...ks,value]);
                 this.#children.set(k,child);
             }
         }

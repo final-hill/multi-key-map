@@ -56,24 +56,24 @@ describe('Testing MultiKeyMap', () => {
         expect(m.get('I','V')).toBe(4);
     });
 
-    test('null key', () => {
-        const m = new MultiKeyMap<[],number>();
+    test('undefined key', () => {
+        const m = new MultiKeyMap<[undefined],number>();
 
-        expect(m.get()).toBeUndefined();
+        expect(m.get(undefined)).toBeUndefined();
 
-        expect(m.has()).toBe(false);
+        expect(m.has(undefined)).toBe(false);
 
         expect(m.size).toBe(0);
 
-        expect(() => m.set(1)).not.toThrow();
+        expect(() => m.set(undefined,1)).not.toThrow();
 
-        expect(m.has()).toBe(true);
+        expect(m.has(undefined)).toBe(true);
 
-        expect(m.get()).toBe(1);
+        expect(m.get(undefined)).toBe(1);
 
         expect(m.size).toBe(1);
 
-        expect(m.delete()).toBe(true);
+        expect(m.delete(undefined)).toBe(true);
 
         expect(m.size).toBe(0);
     });
@@ -116,5 +116,18 @@ describe('Testing MultiKeyMap', () => {
         m.set('I','I','I',3);
         m.set('I','V',4);
         m.set('V',5);
+
+        expect(m.size).toBe(5);
+
+        expect(m.get('I')).toBe(1);
+        expect(m.get('I','I','I')).toBe(3);
+
+        expect(m.delete('X')).toBe(false);
+        expect(m.size).toBe(5);
+
+        expect(m.delete('I','I')).toBe(true);
+        expect(m.size).toBe(4);
+
+        expect(m.get('I','I')).toBe(undefined);
     });
 });
