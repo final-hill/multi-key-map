@@ -18,7 +18,7 @@ Also known as a [Trie](https://en.wikipedia.org/wiki/Trie)
 Note that the license for this library is [AGPL-3.0-only](https://www.gnu.org/licenses/agpl-3.0.en.html).
 You should [know what that means](https://choosealicense.com/licenses/agpl-3.0/) before
 using this library. If you would like an exception to this license per section 7
-[contact the author](mailto:tno@thenewobjective.com).
+[contact the author](mailto:michael.haufe@final-hill.com).
 
 ## Library Installation
 
