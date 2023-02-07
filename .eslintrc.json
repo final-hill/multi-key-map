@@ -34,10 +34,12 @@
         ],
         "consistent-return": [
             "error",
-            { "treatUndefinedAsUnspecified": false }
+            {
+                "treatUndefinedAsUnspecified": false
+            }
         ],
         "@typescript-eslint/consistent-type-assertions": "error",
-        "@typescript-eslint/explicit-function-return-type":  "error",
+        "@typescript-eslint/explicit-function-return-type": "error",
         "@typescript-eslint/member-delimiter-style": "error",
         "no-array-constructor": [
             "off"
@@ -228,15 +230,18 @@
         "require-yield": [
             "error"
         ],
-        "require-jsdoc": ["error", {
-            "require": {
-                "FunctionDeclaration": true,
-                "MethodDefinition": false,
-                "ClassDeclaration": false,
-                "ArrowFunctionExpression": false,
-                "FunctionExpression": false
+        "require-jsdoc": [
+            "error",
+            {
+                "require": {
+                    "FunctionDeclaration": true,
+                    "MethodDefinition": false,
+                    "ClassDeclaration": false,
+                    "ArrowFunctionExpression": false,
+                    "FunctionExpression": false
+                }
             }
-        }],
+        ],
         "use-isnan": [
             "error"
         ],
@@ -282,7 +287,7 @@
         "eol-last": "off",
         "linebreak-style": [
             "error",
-            "windows"
+            "unix"
         ],
         "max-len": [
             "error",
@@ -324,20 +329,33 @@
             "never"
         ],
         "yoda": "off",
-        "valid-jsdoc": ["error", {
-            "requireReturn": false
-        }],
-        "header/header": [2, "block", [
-            "!",
-            " * @license",
-            " * Copyright (C) 2020 Final Hill LLC",
-            " * SPDX-License-Identifier: AGPL-3.0-only",
-            " * @see <https://spdx.org/licenses/AGPL-3.0-only.html>",
-            " "
-        ]]
+        "valid-jsdoc": [
+            "error",
+            {
+                "requireReturn": false
+            }
+        ],
+        "header/header": [
+            2,
+            "block",
+            [
+                "!",
+                " * @license",
+                " * Copyright (C) 2020 Final Hill LLC",
+                " * SPDX-License-Identifier: AGPL-3.0-only",
+                " * @see <https://spdx.org/licenses/AGPL-3.0-only.html>",
+                " "
+            ]
+        ]
     },
     "settings": {
-        "import/parsers": { "@typescript-eslint/parser": [".ts"] },
-        "import/resolver": { "eslint-import-resolver-typescript": true }
+        "import/parsers": {
+            "@typescript-eslint/parser": [
+                ".ts"
+            ]
+        },
+        "import/resolver": {
+            "eslint-import-resolver-typescript": true
+        }
     }
 }

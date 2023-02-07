@@ -8,34 +8,31 @@ on:
     branches: [ main ]
 
 jobs:
-  validate:
-    runs-on: windows-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x]
+  build:
+    name: Build
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-      
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-
-    - name: Cache Node.js modules
-      uses: actions/cache@v1
-      with:
-        path: "%AppData%\npm-cache" # npm cache files are stored under the AppData folder on Windows
-        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.OS }}-node-
-          ${{ runner.OS }}-    
+    - name: Checkout
+      uses: actions/checkout@v3
     
-    - name: npm install, build, and test
-      run: |
-        npm install
-        npm run build-nofix
-        npm test
-      env:
-        CI: true
+    - name: Setup npmrc
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16.x'
+        cache: 'npm'
+        registry-url: 'https://registry.npmjs.org'
+      
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: npm-${{ hashFiles('package-lock.json') }}
+        restore-keys: npm-
+
+    - name: Install dependencies
+      run: npm install
+    - name: Build
+      run: npm run build
+    - name: Run unit tests
+      run: npm run test
