@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.1
+
+- Updated github actions
+
 ## v1.1.0
 
 - added package.json keyword aliases

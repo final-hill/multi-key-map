@@ -1,6 +1,6 @@
 {
     "name": "@final-hill/multi-key-map",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "A map implementation that supports multiple keys",
     "exports": {
         ".": {
