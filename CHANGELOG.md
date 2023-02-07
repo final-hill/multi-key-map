@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.2
+
+- Bugfix of github publish action
+
 ## v1.1.1
 
 - Updated github actions
