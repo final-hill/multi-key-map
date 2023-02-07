@@ -7,8 +7,8 @@
 
 const noEntry = Symbol('noEntry');
 
-export type Entry<KS extends unknown[],V> = [...KS, V];
-export type Entries<KS extends unknown[],V> = readonly (readonly [...KS, V])[] | null;
+export type Entry<KS extends unknown[], V> = [...KS, V];
+export type Entries<KS extends unknown[], V> = readonly (readonly [...KS, V])[] | null;
 
 /**
  * MultiKeyMap is a map that associated multiple keys with a single value.
@@ -16,7 +16,7 @@ export type Entries<KS extends unknown[],V> = readonly (readonly [...KS, V])[] |
  */
 class MultiKeyMap<KS extends unknown[], V> {
     #value: V | typeof noEntry = noEntry;
-    #children = new Map<KS[0], MultiKeyMap<KS,V>>();
+    #children = new Map<KS[0], MultiKeyMap<KS, V>>();
 
     /**
      * Constructs a new MultiKeyMap.
@@ -28,8 +28,18 @@ class MultiKeyMap<KS extends unknown[], V> {
      *    ...
      * ])
      */
-    constructor(entries?: Entries<KS,V>) {
+    constructor(entries?: Entries<KS, V>) {
         entries?.forEach(entry => this.set(...entry));
+    }
+
+    /**
+     * Returns the number of items in the MultiKeyMap
+     */
+    get size(): number {
+        let s = 0;
+        this.forEach(() => s++);
+
+        return s;
     }
 
     /**
@@ -39,9 +49,9 @@ class MultiKeyMap<KS extends unknown[], V> {
     *[Symbol.iterator](): IterableIterator<[KS, V]> {
         const es: [KS, V][] = [];
 
-        this.forEach((value, keys) => es.push([keys,value]));
+        this.forEach((value, keys) => es.push([keys, value]));
 
-        for(const e of es) {
+        for (const e of es) {
             yield e;
         }
     }
@@ -61,8 +71,8 @@ class MultiKeyMap<KS extends unknown[], V> {
      * @returns {boolean} - false if the entry does not exist, true otherwise
      */
     delete(...keys: KS): boolean {
-        if(keys.length == 0) {
-            if(this.#value === noEntry) {
+        if (keys.length == 0) {
+            if (this.#value === noEntry) {
                 return false;
             } else {
                 this.#value = noEntry;
@@ -70,9 +80,9 @@ class MultiKeyMap<KS extends unknown[], V> {
                 return true;
             }
         } else {
-            const [k,ks] = [keys[0], keys.slice(1) as KS];
+            const [k, ks] = [keys[0], keys.slice(1) as KS];
 
-            if(this.#children.has(k)) {
+            if (this.#children.has(k)) {
                 const child = this.#children.get(k)!;
 
                 return child.delete(...ks);
@@ -89,9 +99,9 @@ class MultiKeyMap<KS extends unknown[], V> {
     *entries(): IterableIterator<[KS, V]> {
         const es: [KS, V][] = [];
 
-        this.forEach((value, keys) => es.push([keys,value]));
+        this.forEach((value, keys) => es.push([keys, value]));
 
-        for(const e of es) {
+        for (const e of es) {
             yield e;
         }
     }
@@ -113,11 +123,11 @@ class MultiKeyMap<KS extends unknown[], V> {
      * @returns {V | undefined} - The value if it exists, undefined otherwise
      */
     get(...keys: KS): V | undefined {
-        if(keys.length == 0) {
+        if (keys.length == 0) {
             return this.#value === noEntry ? undefined : this.#value;
         } else {
-            const [k,ks] = [keys[0], keys.slice(1) as KS];
-            if(this.#children.has(k)) {
+            const [k, ks] = [keys[0], keys.slice(1) as KS];
+            if (this.#children.has(k)) {
                 const child = this.#children.get(k)!;
 
                 return child.get(...ks);
@@ -134,10 +144,10 @@ class MultiKeyMap<KS extends unknown[], V> {
      * @returns {boolean} - true if the associated value exists, false otherwise
      */
     has(...keys: KS): boolean {
-        if(keys.length == 0) {
+        if (keys.length == 0) {
             return this.#value !== noEntry;
         } else {
-            const [k,ks] = [keys[0], keys.slice(1) as KS];
+            const [k, ks] = [keys[0], keys.slice(1) as KS];
 
             return this.#children.has(k) ?
                 this.#children.get(k)!.has(...ks) : false;
@@ -151,9 +161,9 @@ class MultiKeyMap<KS extends unknown[], V> {
     *keys(): IterableIterator<KS> {
         const ks: KS[] = [];
 
-        this.forEach((_,keys) => ks.push(keys));
+        this.forEach((_, keys) => ks.push(keys));
 
-        for(const k of ks) {
+        for (const k of ks) {
             yield k;
         }
     }
@@ -164,37 +174,27 @@ class MultiKeyMap<KS extends unknown[], V> {
      * @param {Entry<KS,V>} keysValue - Entry format: [key0,key1,...,keyn,value]
      * @returns {this} - The MultiKeyMap
      */
-    set(...keysValue: Entry<KS,V>): this {
+    set(...keysValue: Entry<KS, V>): this {
         const [keys, value] = (
-            keysValue.length <= 1 ? [[],keysValue[0]] :
-            [keysValue.slice(0,-1),keysValue[keysValue.length - 1]]
-        ) as unknown as [KS,V];
+            keysValue.length <= 1 ? [[], keysValue[0]] :
+                [keysValue.slice(0, -1), keysValue[keysValue.length - 1]]
+        ) as unknown as [KS, V];
 
-        if(keys.length == 0) {
+        if (keys.length == 0) {
             this.#value = value;
         } else {
-            const [k,ks] = [keys[0], keys.slice(1) as KS];
-            if(this.#children.has(k)) {
+            const [k, ks] = [keys[0], keys.slice(1) as KS];
+            if (this.#children.has(k)) {
                 const child = this.#children.get(k)!;
-                child.set(...[...ks,value]);
+                child.set(...[...ks, value]);
             } else {
-                const child = new MultiKeyMap<KS,V>();
-                child.set(...[...ks,value]);
-                this.#children.set(k,child);
+                const child = new MultiKeyMap<KS, V>();
+                child.set(...[...ks, value]);
+                this.#children.set(k, child);
             }
         }
 
         return this;
-    }
-
-    /**
-     * Returns the number of items in the MultiKeyMap
-     */
-    get size(): number {
-        let s = 0;
-        this.forEach(() => s++);
-
-        return s;
     }
 
     /**
@@ -204,9 +204,9 @@ class MultiKeyMap<KS extends unknown[], V> {
     toString(): string {
         return [...this].map(entry => {
             const [keys, value] = (
-                entry.length <= 1 ? [[],entry[0]] :
-                [entry.slice(0,-1),entry[entry.length - 1]]
-            ) as unknown as [KS,V];
+                entry.length <= 1 ? [[], entry[0]] :
+                    [entry.slice(0, -1), entry[entry.length - 1]]
+            ) as unknown as [KS, V];
 
             return `[${keys.join()}]:${value}`;
         }).join(';');
@@ -218,18 +218,18 @@ class MultiKeyMap<KS extends unknown[], V> {
     *values(): IterableIterator<V> {
         const values: V[] = [];
         this.forEach(value => values.push(value));
-        for(const value of values) {
+        for (const value of values) {
             yield value;
         }
     }
 
     protected _forEach(keys: KS, callbackfn: (value: V, keys: KS, multiKeyMap: MultiKeyMap<KS, V>) => void, thisArg?: any): void {
-        if(this.#value !== noEntry) {
-            callbackfn.call(thisArg ?? this,this.#value,keys,this);
+        if (this.#value !== noEntry) {
+            callbackfn.call(thisArg ?? this, this.#value, keys, this);
         }
 
         this.#children.forEach((childMap, key) => {
-            childMap._forEach([...keys,key] as KS, callbackfn, thisArg);
+            childMap._forEach([...keys, key] as KS, callbackfn, thisArg);
         });
     }
 }

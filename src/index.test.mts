@@ -5,7 +5,7 @@
  * @see <https://spdx.org/licenses/AGPL-3.0-only.html>
  */
 
-import MultiKeyMap from './index';
+import MultiKeyMap from './index.mjs';
 
 describe('Testing MultiKeyMap', () => {
     test('Constructing empty', () => {
@@ -17,13 +17,13 @@ describe('Testing MultiKeyMap', () => {
 
     test('Constructing with entries', () => {
         expect(() => new MultiKeyMap<[string], number>([
-            ['a',1],
-            ['b',2]
+            ['a', 1],
+            ['b', 2]
         ])).not.toThrow();
 
         const m = new MultiKeyMap<[string], number>([
-            ['a',1],
-            ['b',2]
+            ['a', 1],
+            ['b', 2]
         ]);
 
         expect(m.size).toBe(2);
@@ -32,15 +32,15 @@ describe('Testing MultiKeyMap', () => {
 
     test('Constructing with multiple key entries', () => {
         let m!: MultiKeyMap<
-            [string]|[string,string]|[string,string,string],number
+            [string] | [string, string] | [string, string, string], number
         >;
         expect(() => {
             m = new MultiKeyMap<
-                [string]|[string,string]|[string,string,string],number
+                [string] | [string, string] | [string, string, string], number
             >([
                 ['I', 1],
                 ['I', 'I', 2],
-                ['I', 'I','I', 3],
+                ['I', 'I', 'I', 3],
                 ['I', 'V', 4],
                 ['V', 5]
             ]);
@@ -49,15 +49,15 @@ describe('Testing MultiKeyMap', () => {
         expect(m.size).toBe(5);
 
         expect(m.has('I')).toBe(true);
-        expect(m.has('I','V')).toBe(true);
-        expect(m.has('V','I')).toBe(false);
+        expect(m.has('I', 'V')).toBe(true);
+        expect(m.has('V', 'I')).toBe(false);
 
         expect(m.get('I')).toBe(1);
-        expect(m.get('I','V')).toBe(4);
+        expect(m.get('I', 'V')).toBe(4);
     });
 
     test('undefined key', () => {
-        const m = new MultiKeyMap<[undefined],number>();
+        const m = new MultiKeyMap<[undefined], number>();
 
         expect(m.get(undefined)).toBeUndefined();
 
@@ -65,7 +65,7 @@ describe('Testing MultiKeyMap', () => {
 
         expect(m.size).toBe(0);
 
-        expect(() => m.set(undefined,1)).not.toThrow();
+        expect(() => m.set(undefined, 1)).not.toThrow();
 
         expect(m.has(undefined)).toBe(true);
 
@@ -78,17 +78,17 @@ describe('Testing MultiKeyMap', () => {
         expect(m.size).toBe(0);
     });
 
-    test('Single key',() => {
+    test('Single key', () => {
         const m = new MultiKeyMap<[string], number>();
 
-        expect(() => m.set('a',1)).not.toThrow();
+        expect(() => m.set('a', 1)).not.toThrow();
 
         expect(m.has('a')).toBe(true);
         expect(m.has('b')).toBe(false);
 
         expect(m.size).toBe(1);
 
-        expect(() => m.set('b',2)).not.toThrow();
+        expect(() => m.set('b', 2)).not.toThrow();
 
         expect(m.size).toBe(2);
 
@@ -108,53 +108,59 @@ describe('Testing MultiKeyMap', () => {
 
     test('Multi-Key', () => {
         const m = new MultiKeyMap<
-            [string]|[string,string]|[string,string,string],number
+            [string] | [string, string] | [string, string, string], number
         >();
 
-        m.set('I',1);
-        m.set('I','I',2);
-        m.set('I','I','I',3);
-        m.set('I','V',4);
-        m.set('V',5);
+        m.set('I', 1);
+        m.set('I', 'I', 2);
+        m.set('I', 'I', 'I', 3);
+        m.set('I', 'V', 4);
+        m.set('V', 5);
 
         expect(m.size).toBe(5);
 
         expect(m.get('I')).toBe(1);
-        expect(m.get('I','I','I')).toBe(3);
+        expect(m.get('I', 'I', 'I')).toBe(3);
 
         expect(m.delete('X')).toBe(false);
         expect(m.size).toBe(5);
 
-        expect(m.delete('I','I')).toBe(true);
+        expect(m.delete('I', 'I')).toBe(true);
         expect(m.size).toBe(4);
 
-        expect(m.get('I','I')).toBe(undefined);
+        expect(m.get('I', 'I')).toBe(undefined);
     });
 
     test('string representation', () => {
         expect(new MultiKeyMap().toString()).toBe('');
 
+        expect(new MultiKeyMap([['a']]).toString()).toBe('[]:a');
+
         expect(new MultiKeyMap([
-            ['a',1],
-            ['b',2],
-            ['c',3]
+            ['a', 1]
+        ]).toString()).toBe('[a]:1');
+
+        expect(new MultiKeyMap([
+            ['a', 1],
+            ['b', 2],
+            ['c', 3]
         ]).toString()).toBe('[a]:1;[b]:2;[c]:3');
 
-        expect(new MultiKeyMap<[...string[]],number>([
-            ['I',1],
-            ['I','I',2],
-            ['I','I','I',3],
-            ['I','V',4]
+        expect(new MultiKeyMap<[...string[]], number>([
+            ['I', 1],
+            ['I', 'I', 2],
+            ['I', 'I', 'I', 3],
+            ['I', 'V', 4]
         ]).toString()).toBe('[I]:1;[I,I]:2;[I,I,I]:3;[I,V]:4');
     });
 
     test('forEach', () => {
         const m = new MultiKeyMap([
-            ['a',1],
-            ['b',2],
-            ['c',3]
+            ['a', 1],
+            ['b', 2],
+            ['c', 3]
         ]),
-        items: number[] = [];
+            items: number[] = [];
 
         expect(() => {
             m.forEach(value => {
@@ -164,17 +170,17 @@ describe('Testing MultiKeyMap', () => {
 
         expect(items.join()).toBe('1,2,3');
 
-        const n = new MultiKeyMap<[],number>();
+        const n = new MultiKeyMap<[], number>();
         n.set(1);
         items.length = 0;
         expect(() => {
-            n.forEach(function(this: number[], value){ this.push(value); }, items);
+            n.forEach(function (this: number[], value) { this.push(value); }, items);
         }).not.toThrow();
         expect(items.join()).toBe('1');
     });
 
     test('iterate directly', () => {
-        const m = new MultiKeyMap<[string],number>([
+        const m = new MultiKeyMap<[string], number>([
             ['a', 1],
             ['b', 2],
             ['c', 3]
@@ -182,15 +188,15 @@ describe('Testing MultiKeyMap', () => {
         expect([...m].join()).toBe('a,1,b,2,c,3');
     });
     test('iterate entries', () => {
-        const m = new MultiKeyMap<[string],number>([
+        const m = new MultiKeyMap<[string], number>([
             ['a', 1],
             ['b', 2],
             ['c', 3]
         ]),
-        entries: [[string],number][] = [];
+            entries: [[string], number][] = [];
 
         expect(() => {
-            for(const e of m.entries()) {
+            for (const e of m.entries()) {
                 entries.push(e);
             }
         }).not.toThrow();
@@ -204,10 +210,10 @@ describe('Testing MultiKeyMap', () => {
             ['b', 2],
             ['c', 3]
         ]),
-        keys: string[][] = [];
+            keys: string[][] = [];
 
         expect(() => {
-            for(const key of m.keys()) {
+            for (const key of m.keys()) {
                 keys.push(key);
             }
         }).not.toThrow();
@@ -215,15 +221,15 @@ describe('Testing MultiKeyMap', () => {
         expect(keys.join()).toBe('a,b,c');
 
         const n = new MultiKeyMap([
-            ['0','0',0],
-            ['0','1',0],
-            ['1','0',0],
-            ['1','1',1]
+            ['0', '0', 0],
+            ['0', '1', 0],
+            ['1', '0', 0],
+            ['1', '1', 1]
         ]),
-        k2: string[][] = [];
+            k2: string[][] = [];
 
         expect(() => {
-            for(const key of n.keys()) {
+            for (const key of n.keys()) {
                 k2.push(key);
             }
         }).not.toThrow();
@@ -237,10 +243,10 @@ describe('Testing MultiKeyMap', () => {
             ['b', 2],
             ['c', 3]
         ]),
-        values: number[] = [];
+            values: number[] = [];
 
         expect(() => {
-            for(const value of m.values()) {
+            for (const value of m.values()) {
                 values.push(value);
             }
         }).not.toThrow();
