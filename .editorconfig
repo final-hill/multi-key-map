@@ -3,9 +3,9 @@
 # top-most EditorConfig file
 root = true
 
-[*.{ts,json,config}]
+[*.{mjs,mts,ts,json,config,editorconfig}]
 charset = utf-8
-end_of_line = crlf
+end_of_line = lf
 indent_size = 4
 indent_style = space
 trim_trailing_whitespace = true
