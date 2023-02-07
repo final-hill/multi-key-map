@@ -8,32 +8,32 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: windows-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x]
+    runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Checkout
+        uses: actions/checkout@v3
+  
+      - name: Setup npmrc
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: Cache Node.js modules
-        uses: actions/cache@v1
+          node-version: '16.x'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
         with:
-          path: "%AppData%\npm-cache" # npm cache files are stored under the AppData folder on Windows
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
-            ${{ runner.OS }}-
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
+
       - name: Install dependencies
         run: npm install
       - name: Build
-        run: npm run build-nofix
+        run: npm run build
       - name: Run unit tests
-        run: npm test
+        run: npm run test
       - name: Create package
         run: npm pack
       - name: Rename package to generic name
@@ -47,11 +47,7 @@ jobs:
   release:
     name: Publish to npm
     needs: build
-    runs-on: windows-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x]
+    runs-on: ubuntu-latest
     
     steps:
       - name: Download artifact
@@ -60,13 +56,14 @@ jobs:
           name: artifact
       - name: Extract package from artifact
         run: tar -xf artifact/final-hill-multi-key-map.tgz --strip 1
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+
+      - name: Setup npmrc
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          registry-url: https://registry.npmjs.org
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          node-version: '16.x'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
       - name: Publish
         run: npm publish --access public
         env:
