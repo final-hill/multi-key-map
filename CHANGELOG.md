@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.3
+
+- Additional github publish action fix
+
 ## v1.1.2
 
 - Bugfix of github publish action

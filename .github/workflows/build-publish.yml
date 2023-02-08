@@ -1,27 +1,25 @@
-name: Build
+name: Build/Release
 
 on:
-  pull_request:
-    branches: [ main ]
-  push:
-    branches: [ main ]
+  release:
+    types: [created]
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
-      - name: Setup node
+  
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
-        
+
       - name: Install dependencies
         run: npm ci
   
@@ -30,3 +28,8 @@ jobs:
 
       - name: Run unit tests
         run: npm run test
+
+      - name: Publish to NPM
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
