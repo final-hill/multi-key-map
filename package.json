@@ -1,13 +1,17 @@
 {
     "name": "@final-hill/multi-key-map",
-    "version": "1.1.3",
+    "version": "1.1.4",
     "description": "A map implementation that supports multiple keys",
     "exports": {
         ".": {
-            "import": "./dist/index.mjs"
+            "import": "./dist/index.mjs",
+            "types": "./dist/index.d.ts"
         }
     },
     "type": "module",
+    "files": [
+        "dist"
+    ],
     "repository": {
         "type": "git",
         "url": "git+https://github.com/final-hill/multi-key-map.git"
