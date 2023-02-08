@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.4
+
+- Added `files` and `types` entries to `package.json`
+
 ## v1.1.3
 
 - Additional github publish action fix
